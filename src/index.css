@@ -165,6 +165,29 @@ textarea {
   margin: 0 0 1rem;
 }
 
+.panel__section {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.panel__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.panel__subtitle {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.panel__count {
+  color: var(--muted, #6b7280);
+  font-weight: 400;
+}
+
 .page-actions {
   margin-bottom: 1rem;
 }
