@@ -1,0 +1,42 @@
+.stack-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stack-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.stack-list__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.stack-list__name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.stack-list__meta {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.stack-list__actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}

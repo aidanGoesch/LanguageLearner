@@ -1,0 +1,66 @@
+.review-session {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+.review-session__progress {
+  padding: 1rem 1.25rem 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.review-session__card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem 1.25rem;
+  padding: 2rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  min-height: 280px;
+}
+
+.review-session__card--flipped {
+  cursor: default;
+  flex: 1;
+  margin-bottom: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.review-session__face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.review-session__text {
+  font-size: clamp(1.5rem, 6vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+  word-break: break-word;
+}
+
+.review-session__text--definition {
+  font-size: clamp(1.25rem, 5vw, 1.75rem);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.review-session__hint {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}

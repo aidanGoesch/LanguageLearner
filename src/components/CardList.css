@@ -1,0 +1,24 @@
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.card-list__search {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.card-list__items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.card-list__items > li {
+  list-style: none;
+}

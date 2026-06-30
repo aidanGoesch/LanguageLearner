@@ -1,0 +1,38 @@
+.grade-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.grade-buttons__btn {
+  width: 100%;
+  min-height: 52px;
+  padding: 0.875rem 1rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+}
+
+.grade-buttons__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.grade-buttons__btn--forgot {
+  background: var(--danger);
+}
+
+.grade-buttons__btn--struggled {
+  background: var(--warning);
+  color: #1a1a1a;
+}
+
+.grade-buttons__btn--easy {
+  background: var(--success);
+}
