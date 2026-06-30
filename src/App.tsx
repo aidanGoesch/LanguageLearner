@@ -10,7 +10,7 @@ import { Study } from './pages/Study';
 export function App() {
   return (
     <ConfirmProvider>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/study" element={<Study />} />
