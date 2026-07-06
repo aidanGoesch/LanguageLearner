@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Card, Stack } from '../types';
+import { formatDue } from '../utils/cards';
 import './CardBubble.css';
 import './CardList.css';
 
@@ -121,7 +122,16 @@ function CardBubbleItem({
     <li>
       <article className="card-bubble">
         <div className="card-bubble__header">
-          <span className="card-bubble__state">{card.state}</span>
+          <div className="card-bubble__meta">
+            <span className="card-bubble__state">{card.state}</span>
+            <span className="card-bubble__due">{formatDue(card.due, card.state)}</span>
+            {(card.reps > 0 || card.lapses > 0) && (
+              <span className="card-bubble__stats">
+                {card.reps} rep{card.reps !== 1 ? 's' : ''}
+                {card.lapses > 0 && ` · ${card.lapses} lapse${card.lapses !== 1 ? 's' : ''}`}
+              </span>
+            )}
+          </div>
           <button
             type="button"
             className="card-bubble__delete"

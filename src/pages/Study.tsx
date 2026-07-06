@@ -62,7 +62,7 @@ export function Study() {
     setPhase('review');
   };
 
-  const handleGrade = async (card: Card, grade: Grade) => {
+  const handleGrade = async (card: Card, grade: Grade): Promise<Card> => {
     const settings = await getSettings();
     const { card: updated, log } = gradeCard(card, grade, settings);
     await updateCard(updated);
@@ -74,6 +74,7 @@ export function Study() {
       easy: s.easy + (grade === 'easy' ? 1 : 0),
     }));
     setAllCards((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+    return updated;
   };
 
   const handleComplete = useCallback(async () => {

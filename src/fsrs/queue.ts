@@ -86,20 +86,27 @@ export function countDueThisWeek(cards: Card[], now = Date.now()): number {
   return cards.filter((c) => c.state !== 'New' && c.due <= weekEnd).length;
 }
 
-export function forecastDue(cards: Card[], now = Date.now()): { tomorrow: number; thisWeek: number } {
+export function forecastDue(
+  cards: Card[],
+  now = Date.now(),
+): { dueSoon: number; dueLaterToday: number; tomorrow: number; thisWeek: number } {
+  const oneHour = now + 60 * 60 * 1000;
+  const dayEnd = endOfDay(now);
   const tomorrowStart = startOfDay(now) + 24 * 60 * 60 * 1000;
   const tomorrowEnd = endOfDay(tomorrowStart);
   const weekEnd = startOfDay(now) + 7 * 24 * 60 * 60 * 1000 - 1;
 
-  const tomorrow = cards.filter(
-    (c) => c.state !== 'New' && c.due >= tomorrowStart && c.due <= tomorrowEnd,
-  ).length;
+  const active = cards.filter((c) => c.state !== 'New');
 
-  const thisWeek = cards.filter(
-    (c) => c.state !== 'New' && c.due > endOfDay(now) && c.due <= weekEnd,
-  ).length;
+  const dueSoon = active.filter((c) => c.due > now && c.due <= oneHour).length;
 
-  return { tomorrow, thisWeek };
+  const dueLaterToday = active.filter((c) => c.due > oneHour && c.due <= dayEnd).length;
+
+  const tomorrow = active.filter((c) => c.due >= tomorrowStart && c.due <= tomorrowEnd).length;
+
+  const thisWeek = active.filter((c) => c.due > tomorrowEnd && c.due <= weekEnd).length;
+
+  return { dueSoon, dueLaterToday, tomorrow, thisWeek };
 }
 
 export function computeStreak(reviewLogs: { reviewedAt: number }[], now = Date.now()): number {
@@ -133,6 +140,15 @@ export function computeRetentionRate(
   const cutoff = now - days * 24 * 60 * 60 * 1000;
   const recent = reviewLogs.filter((l) => l.reviewedAt >= cutoff);
   if (recent.length === 0) return null;
-  const remembered = recent.filter((l) => l.rating === 3 || l.rating === 4).length;
+  const remembered = recent.filter((l) => l.rating !== 1).length;
   return Math.round((remembered / recent.length) * 100);
+}
+
+export function countReadyToStudy(
+  cards: Card[],
+  settings: AppSettings,
+  newCardsStudiedToday: number,
+  now = Date.now(),
+): number {
+  return buildQueue(cards, settings, newCardsStudiedToday, now).length;
 }

@@ -3,7 +3,7 @@ import type { SessionStats } from '../types';
 
 interface SessionSummaryProps {
   stats: SessionStats;
-  forecast: { tomorrow: number; thisWeek: number };
+  forecast: { dueSoon: number; dueLaterToday: number; tomorrow: number; thisWeek: number };
 }
 
 export function SessionSummary({ stats, forecast }: SessionSummaryProps) {
@@ -28,6 +28,20 @@ export function SessionSummary({ stats, forecast }: SessionSummaryProps) {
       </div>
 
       <div className="session-summary__forecast">
+        {forecast.dueSoon > 0 && (
+          <p>
+            <strong>{forecast.dueSoon}</strong> card{forecast.dueSoon !== 1 ? 's' : ''} due again
+            within the hour
+          </p>
+        )}
+        {forecast.dueLaterToday > 0 && (
+          <p>
+            <strong>{forecast.dueLaterToday}</strong> more due later today
+          </p>
+        )}
+        {forecast.dueSoon === 0 && forecast.dueLaterToday === 0 && (
+          <p className="session-summary__forecast-note">No cards scheduled for the rest of today.</p>
+        )}
         <p>
           <strong>{forecast.tomorrow}</strong> card{forecast.tomorrow !== 1 ? 's' : ''} due tomorrow
         </p>

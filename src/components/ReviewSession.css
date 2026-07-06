@@ -64,3 +64,14 @@
   font-size: 0.875rem;
   color: var(--text-muted);
 }
+
+.review-session__feedback {
+  margin: 0 1.25rem 0.5rem;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--primary);
+  background: var(--primary-soft);
+  border-radius: var(--radius);
+}

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { QuickAddCard } from '../components/QuickAddCard';
-import { getAllCards, getAllStacks } from '../db';
-import { countDueCards } from '../fsrs/queue';
+import { getAllCards, getAllReviewLogs, getAllStacks, getSettings } from '../db';
+import { countNewCardsStudiedToday, countReadyToStudy } from '../fsrs/queue';
 import { createCard } from '../db/cards';
 import { createNewCardFields } from '../utils/cards';
 import type { Stack } from '../types';
@@ -14,9 +14,15 @@ export function Home() {
   const [added, setAdded] = useState(false);
 
   const load = useCallback(async () => {
-    const [allStacks, allCards] = await Promise.all([getAllStacks(), getAllCards()]);
+    const [allStacks, allCards, logs, settings] = await Promise.all([
+      getAllStacks(),
+      getAllCards(),
+      getAllReviewLogs(),
+      getSettings(),
+    ]);
     setStacks(allStacks);
-    setDueCount(countDueCards(allCards));
+    const newToday = countNewCardsStudiedToday(logs);
+    setDueCount(countReadyToStudy(allCards, settings, newToday));
   }, []);
 
   useEffect(() => {

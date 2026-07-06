@@ -1,48 +1,91 @@
 import { useEffect, useState } from 'react';
 import type { Card, Grade } from '../types';
+import { formatDue } from '../utils/cards';
 import { GradeButtons } from './GradeButtons';
 import './ReviewSession.css';
 
+const MAX_TIMES_SEEN = 5;
+const REQUEUE_OFFSET = 3;
+
 interface ReviewSessionProps {
   cards: Card[];
-  onGrade: (card: Card, grade: Grade) => Promise<void>;
+  onGrade: (card: Card, grade: Grade) => Promise<Card>;
   onComplete: () => void;
 }
 
 export function ReviewSession({ cards, onGrade, onComplete }: ReviewSessionProps) {
-  const [index, setIndex] = useState(0);
+  const [queue, setQueue] = useState(cards);
+  const [reviewed, setReviewed] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [grading, setGrading] = useState(false);
   const [done, setDone] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [seenCount, setSeenCount] = useState<Map<string, number>>(() => new Map());
 
-  const current = cards[index];
+  useEffect(() => {
+    setQueue(cards);
+    setReviewed(0);
+    setSeenCount(new Map());
+    setDone(false);
+    setFlipped(false);
+    setFeedback(null);
+  }, [cards]);
+
+  const current = queue[0];
 
   useEffect(() => {
     if (done) onComplete();
   }, [done, onComplete]);
 
+  useEffect(() => {
+    if (!feedback) return;
+    const timer = setTimeout(() => setFeedback(null), 2000);
+    return () => clearTimeout(timer);
+  }, [feedback]);
+
   if (!current || done) {
     return null;
   }
 
+  const total = reviewed + queue.length;
+
   const handleGrade = async (grade: Grade) => {
     if (grading) return;
     setGrading(true);
-    await onGrade(current, grade);
+    const updated = await onGrade(current, grade);
+
+    const seen = (seenCount.get(current.id) ?? 0) + 1;
+    setSeenCount((prev) => new Map(prev).set(current.id, seen));
+
+    const shouldRequeue =
+      (updated.state === 'Learning' || updated.state === 'Relearning') &&
+      seen < MAX_TIMES_SEEN &&
+      grade !== 'easy';
+
+    setQueue((prev) => {
+      const next = prev.slice(1);
+      if (shouldRequeue) {
+        const insertAt = Math.min(REQUEUE_OFFSET, next.length);
+        next.splice(insertAt, 0, updated);
+      }
+      if (next.length === 0) {
+        setDone(true);
+      }
+      return next;
+    });
+
+    setReviewed((r) => r + 1);
+    setFeedback(`${updated.state} · ${formatDue(updated.due, updated.state)}`);
     setFlipped(false);
     setGrading(false);
-    if (index + 1 >= cards.length) {
-      setDone(true);
-    } else {
-      setIndex((i) => i + 1);
-    }
   };
 
   return (
     <div className="review-session">
       <div className="review-session__progress">
-        {index + 1} / {cards.length}
+        {reviewed} / {total}
       </div>
+      {feedback && <p className="review-session__feedback">{feedback}</p>}
       <button
         type="button"
         className={`review-session__card ${flipped ? 'review-session__card--flipped' : ''}`}
