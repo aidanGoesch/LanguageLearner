@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useAutoTranslateDefinition } from '../hooks/useAutoTranslateDefinition';
 import type { Stack } from '../types';
 import './CardBubble.css';
 
@@ -22,6 +23,17 @@ export function QuickAddCard({ stacks, onSubmit }: QuickAddCardProps) {
       current && stacks.some((s) => s.id === current) ? current : stacks[0].id,
     );
   }, [stacks]);
+
+  const sourceLanguage = useMemo(
+    () => stacks.find((s) => s.id === stackId)?.language,
+    [stacks, stackId],
+  );
+
+  const { translating } = useAutoTranslateDefinition({
+    term,
+    sourceLanguage,
+    setDefinition,
+  });
 
   if (stacks.length === 0) {
     return (
@@ -77,7 +89,7 @@ export function QuickAddCard({ stacks, onSubmit }: QuickAddCardProps) {
           className="card-bubble__input"
           value={definition}
           onChange={(e) => setDefinition(e.target.value)}
-          placeholder="Translation or meaning"
+          placeholder={translating ? 'Translating…' : 'Translation or meaning'}
           required
         />
       </div>

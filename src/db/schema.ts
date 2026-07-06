@@ -1,4 +1,5 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
+import { normalizeLanguage } from '../data/languages';
 import type { AppSettings, Card, ReviewLog, Stack } from '../types';
 
 export interface FlashcardDB extends DBSchema {
@@ -23,14 +24,14 @@ export interface FlashcardDB extends DBSchema {
 }
 
 const DB_NAME = 'flashcards';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let dbPromise: Promise<IDBPDatabase<FlashcardDB>> | null = null;
 
 export function getDb(): Promise<IDBPDatabase<FlashcardDB>> {
   if (!dbPromise) {
     dbPromise = openDB<FlashcardDB>(DB_NAME, DB_VERSION, {
-      upgrade(db) {
+      upgrade: async (db, oldVersion, _newVersion, tx) => {
         if (!db.objectStoreNames.contains('stacks')) {
           db.createObjectStore('stacks', { keyPath: 'id' });
         }
@@ -47,6 +48,19 @@ export function getDb(): Promise<IDBPDatabase<FlashcardDB>> {
         }
         if (!db.objectStoreNames.contains('settings')) {
           db.createObjectStore('settings', { keyPath: 'id' });
+        }
+
+        if (oldVersion < 2) {
+          const store = tx.objectStore('stacks');
+          let cursor = await store.openCursor();
+          while (cursor) {
+            const stack = cursor.value;
+            const canonical = normalizeLanguage(stack.language);
+            if (canonical !== stack.language) {
+              await cursor.update({ ...stack, language: canonical });
+            }
+            cursor = await cursor.continue();
+          }
         }
       },
     });

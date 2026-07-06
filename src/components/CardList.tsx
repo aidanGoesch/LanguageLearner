@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useAutoTranslateDefinition } from '../hooks/useAutoTranslateDefinition';
 import type { Card, Stack } from '../types';
 import { formatDue } from '../utils/cards';
 import './CardBubble.css';
@@ -17,15 +18,23 @@ interface CardListProps {
 function NewCardBubble({
   stackId,
   stackName,
+  stackLanguage,
   onAdd,
 }: {
   stackId: string;
   stackName?: string;
+  stackLanguage?: string;
   onAdd: (data: { term: string; definition: string; stackId: string }) => Promise<void>;
 }) {
   const [term, setTerm] = useState('');
   const [definition, setDefinition] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  const { translating } = useAutoTranslateDefinition({
+    term,
+    sourceLanguage: stackLanguage,
+    setDefinition,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +70,7 @@ function NewCardBubble({
           className="card-bubble__input"
           value={definition}
           onChange={(e) => setDefinition(e.target.value)}
-          placeholder="Translation or meaning"
+          placeholder={translating ? 'Translating…' : 'Translation or meaning'}
           required
         />
       </div>
@@ -198,6 +207,7 @@ export function CardList({
         <NewCardBubble
           stackId={selectedStackId}
           stackName={selectedStack?.name}
+          stackLanguage={selectedStack?.language}
           onAdd={onAdd}
         />
       )}

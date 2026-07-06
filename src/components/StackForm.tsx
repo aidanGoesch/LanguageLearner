@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { LANGUAGES, normalizeLanguage } from '../data/languages';
 import type { Stack } from '../types';
 
 interface StackFormProps {
@@ -13,7 +14,7 @@ export function StackForm({ initial, onSubmit, onCancel }: StackFormProps) {
 
   useEffect(() => {
     setName(initial?.name ?? '');
-    setLanguage(initial?.language ?? '');
+    setLanguage(initial?.language ? normalizeLanguage(initial.language) : '');
   }, [initial]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,13 +37,21 @@ export function StackForm({ initial, onSubmit, onCancel }: StackFormProps) {
       </label>
       <label className="form__label">
         Language
-        <input
+        <select
           className="form__input"
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          placeholder="German"
           required
-        />
+        >
+          <option value="" disabled>
+            Select a language
+          </option>
+          {LANGUAGES.map((lang) => (
+            <option key={lang.code} value={lang.name}>
+              {lang.name}
+            </option>
+          ))}
+        </select>
       </label>
       <div className="form__actions">
         <button type="button" className="btn btn--ghost" onClick={onCancel}>
