@@ -14,7 +14,7 @@ export async function translateTerm(
   signal?: AbortSignal,
 ): Promise<string | null> {
   const trimmed = text.trim();
-  if (!trimmed || !navigator.onLine) return null;
+  if (!trimmed) return null;
 
   const sourceCode = getLanguageCode(sourceName);
   const targetCode = getLanguageCode(targetName);

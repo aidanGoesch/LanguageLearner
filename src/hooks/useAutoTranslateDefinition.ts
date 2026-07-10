@@ -50,6 +50,9 @@ export function useAutoTranslateDefinition({
 
     return () => {
       window.clearTimeout(timeout);
+      abortRef.current?.abort();
+      abortRef.current = null;
+      setTranslating(false);
     };
   }, [term, sourceLanguage, setDefinition]);
 
