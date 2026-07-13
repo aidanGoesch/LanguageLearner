@@ -1,18 +1,23 @@
 :root {
-  --bg: #f5f4f1;
-  --surface: #ffffff;
-  --text: #1a1a1a;
-  --text-muted: #6b6b6b;
-  --border: #e5e4e0;
-  --primary: #2563eb;
-  --primary-soft: #eff6ff;
-  --secondary: #64748b;
-  --success: #16a34a;
+  --bg: #1c1610;
+  --surface: #2a2218;
+  --surface-raised: #342a1e;
+  --text: #f5ebe0;
+  --text-muted: #a89888;
+  --border: #3d3428;
+  --primary: #e8a66a;
+  --primary-soft: rgba(232, 166, 106, 0.12);
+  --accent: #ffb347;
+  --accent-soft: #ffd866;
+  --secondary: #7a6a58;
+  --success: #88c9a1;
+  --muted-blue: #9aa8b8;
   --warning: #eab308;
-  --danger: #dc2626;
-  --radius: 12px;
-  --radius-lg: 16px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --danger: #dc7860;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.35);
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: var(--text);
@@ -32,6 +37,9 @@
 body {
   margin: 0;
   min-height: 100dvh;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232, 166, 106, 0.08), transparent),
+    var(--bg);
 }
 
 #root {
@@ -43,6 +51,7 @@ input,
 select,
 textarea {
   font: inherit;
+  color: inherit;
 }
 
 .btn {
@@ -58,6 +67,11 @@ textarea {
   cursor: pointer;
   text-decoration: none;
   min-height: 48px;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .btn--block {
@@ -77,13 +91,15 @@ textarea {
 }
 
 .btn--primary {
-  background: var(--primary);
-  color: white;
+  background: linear-gradient(135deg, var(--accent) 0%, #e8924a 100%);
+  color: #2a2218;
+  box-shadow: 0 4px 16px rgba(255, 179, 71, 0.25);
 }
 
 .btn--secondary {
-  background: var(--secondary);
-  color: white;
+  background: var(--surface-raised);
+  color: var(--text);
+  border: 1px solid var(--border);
 }
 
 .btn--ghost {
@@ -115,12 +131,18 @@ textarea {
   font-weight: 500;
 }
 
+.form__label--row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .form__input,
 .form__textarea {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--surface);
+  background: var(--surface-raised);
   color: var(--text);
   min-height: 48px;
 }
@@ -184,7 +206,7 @@ textarea {
 }
 
 .panel__count {
-  color: var(--muted, #6b7280);
+  color: var(--text-muted);
   font-weight: 400;
 }
 
@@ -257,6 +279,11 @@ textarea {
   text-decoration: none;
   color: var(--text);
   min-height: 48px;
+  transition: border-color 0.15s ease;
+}
+
+.home__link-card:hover {
+  border-color: rgba(232, 166, 106, 0.35);
 }
 
 .home__link-title {
@@ -275,9 +302,17 @@ textarea {
 .settings-section__title {
   font-size: 1rem;
   margin: 0 0 0.75rem;
+  color: var(--accent);
 }
 
 input[type='range'] {
   width: 100%;
   margin-top: 0.25rem;
+  accent-color: var(--accent);
+}
+
+input[type='checkbox'] {
+  width: 1.125rem;
+  height: 1.125rem;
+  accent-color: var(--accent);
 }
