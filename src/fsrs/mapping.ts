@@ -20,7 +20,7 @@ export function mapGradeToFsrsRating(grade: Grade): FsrsGrade {
     case 'forgot':
       return Rating.Again;
     case 'struggled':
-      return Rating.Hard;
+      return Rating.Good;
     case 'easy':
       return Rating.Easy;
   }
@@ -29,7 +29,7 @@ export function mapGradeToFsrsRating(grade: Grade): FsrsGrade {
 export function mapFsrsRatingToGrade(rating: number): Grade {
   if (rating === Rating.Again) return 'forgot';
   if (rating === Rating.Easy) return 'easy';
-  if (rating === Rating.Hard) return 'struggled';
+  if (rating === Rating.Good) return 'struggled';
   return 'struggled';
 }
 

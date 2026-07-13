@@ -1,6 +1,8 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import { normalizeLanguage } from '../data/languages';
-import type { AppSettings, Card, ReviewLog, Stack } from '../types';
+import type { AppSettings, Card, Creature, Profile, ReviewLog, Stack } from '../types';
+import { createEggCreature } from './creature';
+import { DEFAULT_PROFILE, PROFILE_KEY } from './profile';
 
 export interface FlashcardDB extends DBSchema {
   stacks: {
@@ -21,10 +23,18 @@ export interface FlashcardDB extends DBSchema {
     key: string;
     value: AppSettings & { id: string };
   };
+  creature: {
+    key: string;
+    value: Creature;
+  };
+  profile: {
+    key: string;
+    value: Profile & { id: string };
+  };
 }
 
 const DB_NAME = 'flashcards';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 let dbPromise: Promise<IDBPDatabase<FlashcardDB>> | null = null;
 
@@ -50,6 +60,13 @@ export function getDb(): Promise<IDBPDatabase<FlashcardDB>> {
           db.createObjectStore('settings', { keyPath: 'id' });
         }
 
+        if (!db.objectStoreNames.contains('creature')) {
+          db.createObjectStore('creature', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('profile')) {
+          db.createObjectStore('profile', { keyPath: 'id' });
+        }
+
         if (oldVersion < 2) {
           const store = tx.objectStore('stacks');
           let cursor = await store.openCursor();
@@ -60,6 +77,17 @@ export function getDb(): Promise<IDBPDatabase<FlashcardDB>> {
               await cursor.update({ ...stack, language: canonical });
             }
             cursor = await cursor.continue();
+          }
+        }
+
+        if (oldVersion < 3) {
+          const creatureStore = tx.objectStore('creature');
+          if ((await creatureStore.count()) === 0) {
+            await creatureStore.put(createEggCreature());
+          }
+          const profileStore = tx.objectStore('profile');
+          if ((await profileStore.count()) === 0) {
+            await profileStore.put({ id: PROFILE_KEY, ...DEFAULT_PROFILE });
           }
         }
       },
