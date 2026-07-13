@@ -1,0 +1,142 @@
+.home__loading {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 3rem 1rem;
+}
+
+.home__den {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem 0 1rem;
+}
+
+.home__stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.home__stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.home__stat-pill--coins {
+  margin-left: auto;
+  color: var(--accent);
+}
+
+.home__creature-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1rem;
+  background: linear-gradient(165deg, var(--surface) 0%, var(--surface-raised) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.home__creature-stage--urgent {
+  border-color: rgba(220, 120, 80, 0.45);
+  box-shadow: 0 0 0 1px rgba(220, 120, 80, 0.15), var(--shadow-soft);
+}
+
+.home__creature-info {
+  text-align: center;
+  width: 100%;
+}
+
+.home__creature-name {
+  margin: 0;
+  font-size: 1.375rem;
+}
+
+.home__creature-stage-label {
+  margin: 0.15rem 0 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.home__creature-status {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.home__bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.home__bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.home__bar-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.home__bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.home__bar-fill--hunger {
+  background: linear-gradient(90deg, #c76b3a, #e8a66a);
+}
+
+.home__bar-fill--xp {
+  background: linear-gradient(90deg, #7a9b6d, #a8ddb5);
+}
+
+.home__gate-hint {
+  margin: 0.25rem 0 0;
+  font-size: 0.6875rem;
+  opacity: 0.85;
+}
+
+.home__due {
+  font-size: 1rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
+}
+
+.home__study-cta {
+  margin-top: 0.25rem;
+}
+
+.home__adopt {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.home__adopt-text {
+  margin: 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+}

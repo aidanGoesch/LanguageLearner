@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { ManageCards } from './pages/ManageCards';
 import { ManageStacks } from './pages/ManageStacks';
 import { SettingsPage } from './pages/Settings';
+import { Shop } from './pages/Shop';
 import { Stats } from './pages/Stats';
 import { Study } from './pages/Study';
 
@@ -14,6 +15,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/study" element={<Study />} />
+        <Route path="/shop" element={<Shop />} />
         <Route path="/stacks" element={<ManageStacks />} />
         <Route path="/cards" element={<ManageCards />} />
         <Route path="/stats" element={<Stats />} />
