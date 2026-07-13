@@ -34,7 +34,11 @@ export function SessionSummary({ stats, gameStats, forecast, creatureStage }: Se
       animate="visible"
     >
       <motion.h2 className="session-summary__title" variants={riseIn}>
-        {gameStats.dayCompleted ? 'Den fed for today' : 'Session wrapped'}
+        {gameStats.dayCompleted
+          ? 'Den fed for today'
+          : gameStats.endedEarly
+            ? 'Session paused'
+            : 'Session wrapped'}
       </motion.h2>
 
       {gameStats.dayCompleted && (
@@ -43,6 +47,12 @@ export function SessionSummary({ stats, gameStats, forecast, creatureStage }: Se
           {gameStats.streakAfter != null && (
             <span className="session-summary__streak"> 🔥 {gameStats.streakAfter} day streak</span>
           )}
+        </motion.p>
+      )}
+
+      {!gameStats.dayCompleted && gameStats.remainingCards != null && gameStats.remainingCards > 0 && (
+        <motion.p className="session-summary__lead session-summary__lead--waiting" variants={riseIn}>
+          {gameStats.remainingCards} more card{gameStats.remainingCards !== 1 ? 's' : ''} waiting in the queue.
         </motion.p>
       )}
 
@@ -100,7 +110,9 @@ export function SessionSummary({ stats, gameStats, forecast, creatureStage }: Se
           Back to den
         </Link>
         <Link to="/study" className="btn btn--ghost btn--block">
-          Study again
+          {gameStats.remainingCards != null && gameStats.remainingCards > 0
+            ? 'Study next batch'
+            : 'Study again'}
         </Link>
       </motion.div>
     </motion.div>

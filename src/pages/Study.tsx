@@ -166,7 +166,7 @@ export function Study() {
     return updated;
   };
 
-  const handleComplete = useCallback(async () => {
+  const finishSession = useCallback(async (endedEarly: boolean) => {
     const [cards, logs, settings, prof, crit] = await Promise.all([
       getAllCards(),
       getAllReviewLogs(),
@@ -178,7 +178,7 @@ export function Study() {
 
     const newToday = countNewCardsStudiedToday(logs);
     const remaining = countReadyToStudy(cards, settings, newToday);
-    const sg = { ...sessionGameRef.current };
+    const sg = { ...sessionGameRef.current, endedEarly, remainingCards: remaining };
     let updatedProfile = prof;
     let updatedCreature = crit;
 
@@ -208,6 +208,14 @@ export function Study() {
     setPhase('done');
   }, []);
 
+  const handleComplete = useCallback(async () => {
+    await finishSession(false);
+  }, [finishSession]);
+
+  const handleEndSession = useCallback(async () => {
+    await finishSession(true);
+  }, [finishSession]);
+
   if (phase === 'review' && queue.length > 0) {
     return (
       <Layout hideNav>
@@ -222,6 +230,7 @@ export function Study() {
           creatureAccessories={creature?.cosmetics.accessories}
           onGrade={handleGrade}
           onComplete={handleComplete}
+          onEndSession={handleEndSession}
         />
       </Layout>
     );

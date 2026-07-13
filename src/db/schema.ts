@@ -34,7 +34,7 @@ export interface FlashcardDB extends DBSchema {
 }
 
 const DB_NAME = 'flashcards';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 let dbPromise: Promise<IDBPDatabase<FlashcardDB>> | null = null;
 
@@ -88,6 +88,35 @@ export function getDb(): Promise<IDBPDatabase<FlashcardDB>> {
           const profileStore = tx.objectStore('profile');
           if ((await profileStore.count()) === 0) {
             await profileStore.put({ id: PROFILE_KEY, ...DEFAULT_PROFILE });
+          }
+        }
+
+        if (oldVersion < 4) {
+          const creatureStore = tx.objectStore('creature');
+          let cursor = await creatureStore.openCursor();
+          while (cursor) {
+            const creature = cursor.value;
+            if (!creature.cosmetics.background) {
+              await cursor.update({
+                ...creature,
+                cosmetics: { ...creature.cosmetics, background: 'bg-nest' },
+              });
+            }
+            cursor = await cursor.continue();
+          }
+
+          const profileStore = tx.objectStore('profile');
+          let profileCursor = await profileStore.openCursor();
+          while (profileCursor) {
+            const record = profileCursor.value;
+            const owned = record.ownedCosmetics ?? [];
+            if (!owned.includes('bg-nest')) {
+              await profileCursor.update({
+                ...record,
+                ownedCosmetics: [...owned, 'bg-nest'],
+              });
+            }
+            profileCursor = await profileCursor.continue();
           }
         }
       },

@@ -21,7 +21,11 @@ import { sfx } from '../audio/sfx';
 import type { AppSettings, BackupData, ImportMode, Profile } from '../types';
 
 export function SettingsPage() {
-  const [settings, setSettings] = useState<AppSettings>({ newCardsPerDay: 15, requestRetention: 0.9 });
+  const [settings, setSettings] = useState<AppSettings>({
+    newCardsPerDay: 15,
+    cardsPerSession: 20,
+    requestRetention: 0.9,
+  });
   const [profile, setProfile] = useState<Profile | null>(null);
   const [saved, setSaved] = useState(false);
   const [importResult, setImportResult] = useState<string | null>(null);
@@ -126,6 +130,21 @@ export function SettingsPage() {
             }
           />
         </label>
+        <label className="form__label">
+          Cards per session: {settings.cardsPerSession}
+          <input
+            type="range"
+            min={5}
+            max={50}
+            value={settings.cardsPerSession}
+            onChange={(e) =>
+              setSettings((s) => ({ ...s, cardsPerSession: Number(e.target.value) }))
+            }
+          />
+        </label>
+        <p className="form__hint">
+          Each study session reviews up to this many cards. Good for ~5–10 minute mobile sessions.
+        </p>
       </section>
 
       <section className="settings-section">

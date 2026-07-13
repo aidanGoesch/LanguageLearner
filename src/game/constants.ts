@@ -6,10 +6,10 @@ export const SPECIES = 'emberling';
 export const STAGE_ORDER: CreatureStage[] = ['egg', 'baby', 'juvenile', 'adult', 'elder'];
 
 export const XP_TO_ADVANCE: Record<CreatureStage, number> = {
-  egg: 40,
-  baby: 120,
-  juvenile: 300,
-  adult: 600,
+  egg: 30,
+  baby: 220,
+  juvenile: 650,
+  adult: 1500,
   elder: Infinity,
 };
 
@@ -22,9 +22,9 @@ export const STREAK_GATE: Record<CreatureStage, number> = {
   elder: 30,
 };
 
-export const BASE_XP = { forgot: 3, struggled: 10, easy: 14 } as const;
+export const BASE_XP = { forgot: 1, struggled: 4, easy: 6 } as const;
 
-export const COIN_RATIO = 0.45;
+export const COIN_RATIO = 0.15;
 export const COMBO_MAX = 12;
 export const COMBO_STEP = 0.08;
 
@@ -37,7 +37,7 @@ export const CRITICAL_DAYS_BEFORE_LEAVE = 3;
 export const FREEZE_ACCRUAL_INTERVAL_DAYS = 4;
 export const MAX_FREEZES = 3;
 
-export const VARIABLE_REWARD_CHANCE = 1 / 8;
-export const BONUS_COIN_RANGE = [8, 24] as const;
+export const VARIABLE_REWARD_CHANCE = 1 / 16;
+export const BONUS_COIN_RANGE = [3, 8] as const;
 
 export const STREAK_MILESTONES = [7, 14, 30, 60, 100] as const;

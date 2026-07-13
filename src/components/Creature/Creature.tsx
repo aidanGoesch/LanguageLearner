@@ -37,8 +37,10 @@ export interface CreatureProps {
   reaction?: CreatureReaction;
   /** Color-variant key (e.g. 'ember') or a raw hex string. Purely visual. */
   skin?: string;
-  /** Small overlay extras, e.g. ['hat','scarf']. Purely visual. */
+  /** Small overlay extras, e.g. ['acc-hat','acc-scarf']. Purely visual. */
   accessories?: string[];
+  /** Den background cosmetic id (e.g. 'bg-lantern'). Purely visual. */
+  background?: string;
   /** Rendered size in px (square). */
   size?: number;
   onReactionEnd?: () => void;
@@ -53,20 +55,26 @@ interface Palette {
 }
 
 const SKINS: Record<string, Palette> = {
-  ember: { body: '#ffcf8f', shade: '#e8a862', belly: '#fff1da', cheek: '#ff9d8a', eye: '#3a2418' },
-  moss: { body: '#a9db8f', shade: '#7cb867', belly: '#ecffe0', cheek: '#ff9d8a', eye: '#243a1c' },
-  berry: { body: '#e79ad0', shade: '#c46fb0', belly: '#ffe6f6', cheek: '#ff8fb0', eye: '#3a1830' },
-  frost: { body: '#9fc9ff', shade: '#6fa0e0', belly: '#e8f2ff', cheek: '#ff9d8a', eye: '#1c2a3a' },
-  ash: { body: '#d5c8bb', shade: '#a99a8b', belly: '#f4ede4', cheek: '#e79a8a', eye: '#2e2620' },
-  gold: { body: '#ffdf87', shade: '#e6b84e', belly: '#fff6d8', cheek: '#ff9d8a', eye: '#3a2c10' },
+  'skin-default': { body: '#ffcf8f', shade: '#e8a862', belly: '#fff1da', cheek: '#ff9d8a', eye: '#3a2418' },
+  'skin-moss': { body: '#a9db8f', shade: '#7cb867', belly: '#ecffe0', cheek: '#ff9d8a', eye: '#243a1c' },
+  'skin-berry': { body: '#e79ad0', shade: '#c46fb0', belly: '#ffe6f6', cheek: '#ff8fb0', eye: '#3a1830' },
+  'skin-frost': { body: '#9fc9ff', shade: '#6fa0e0', belly: '#e8f2ff', cheek: '#ff9d8a', eye: '#1c2a3a' },
+  'skin-ash': { body: '#d5c8bb', shade: '#a99a8b', belly: '#f4ede4', cheek: '#e79a8a', eye: '#2e2620' },
+  'skin-gold': { body: '#ffdf87', shade: '#e6b84e', belly: '#fff6d8', cheek: '#ff9d8a', eye: '#3a2c10' },
+  'skin-dusk': { body: '#b89ad6', shade: '#8a6bb0', belly: '#f0e6ff', cheek: '#d98aa2', eye: '#2a1838' },
+  'skin-ocean': { body: '#6ec4c4', shade: '#4a9a9a', belly: '#e0f7f7', cheek: '#ff9d8a', eye: '#1a3030' },
+  'skin-rose': { body: '#f0a0a0', shade: '#d07070', belly: '#ffe8e8', cheek: '#ff8fb0', eye: '#3a2020' },
+  'skin-mint': { body: '#a8e6cf', shade: '#78c6a8', belly: '#e8fff4', cheek: '#ff9d8a', eye: '#1a3028' },
+  'skin-shadow': { body: '#7a6a8a', shade: '#5a4a6a', belly: '#e8e0f0', cheek: '#b89ad6', eye: '#1a1420' },
+  'skin-cream': { body: '#fff8e8', shade: '#e8dcc8', belly: '#fffff8', cheek: '#ffd8c8', eye: '#3a3020' },
 };
 
 function resolvePalette(skin?: string): Palette {
-  if (!skin) return SKINS.ember;
+  if (!skin) return SKINS['skin-default'];
   if (skin.startsWith('#')) {
-    return { ...SKINS.ember, body: skin };
+    return { ...SKINS['skin-default'], body: skin };
   }
-  return SKINS[skin] ?? SKINS.ember;
+  return SKINS[skin] ?? SKINS['skin-default'];
 }
 
 interface HeadAnchor {
@@ -96,6 +104,7 @@ export function Creature({
   reaction = 'idle',
   skin,
   accessories = [],
+  background,
   size = 220,
   onReactionEnd,
 }: CreatureProps) {
@@ -212,6 +221,8 @@ export function Creature({
             transition={reduce ? undefined : { duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           />
         )}
+
+        <DenBackground id={background} />
 
         <Nest faded={isGone} />
 
@@ -382,6 +393,71 @@ function getReaction(
 /* ---------------------------------------------------------------------- */
 /* Scenery                                                                 */
 /* ---------------------------------------------------------------------- */
+
+function DenBackground({ id }: { id?: string }) {
+  if (!id || id === 'bg-nest') return null;
+
+  switch (id) {
+    case 'bg-lantern':
+      return (
+        <g opacity={0.85}>
+          <line x1={100} y1={8} x2={100} y2={28} stroke="#8a6a40" strokeWidth={2} />
+          <rect x={88} y={28} width={24} height={18} rx={4} fill="#ffc96b" opacity={0.9} />
+          <ellipse cx={100} cy={46} rx={40} ry={30} fill="#ffc96b" opacity={0.15} />
+        </g>
+      );
+    case 'bg-mushroom':
+      return (
+        <g opacity={0.9}>
+          <ellipse cx={42} cy={168} rx={10} ry={6} fill="#c46fb0" opacity={0.7} />
+          <rect x={38} y={168} width={8} height={10} rx={2} fill="#e8dcc8" />
+          <ellipse cx={158} cy={172} rx={8} ry={5} fill="#9fc9ff" opacity={0.8} />
+          <rect x={155} y={172} width={6} height={8} rx={2} fill="#e8dcc8" />
+          <ellipse cx={100} cy={175} rx={6} ry={4} fill="#a9db8f" opacity={0.7} />
+          <circle cx={42} cy={165} r={3} fill="#fff" opacity={0.5} />
+          <circle cx={158} cy={169} r={2.5} fill="#fff" opacity={0.5} />
+        </g>
+      );
+    case 'bg-stars':
+      return (
+        <g fill="#fff" opacity={0.7}>
+          {[
+            { x: 30, y: 24, r: 1.5 },
+            { x: 60, y: 16, r: 1 },
+            { x: 140, y: 20, r: 1.2 },
+            { x: 170, y: 32, r: 1 },
+            { x: 50, y: 40, r: 0.8 },
+            { x: 155, y: 48, r: 0.9 },
+            { x: 85, y: 12, r: 1.3 },
+          ].map((s, i) => (
+            <circle key={i} cx={s.x} cy={s.y} r={s.r} />
+          ))}
+        </g>
+      );
+    case 'bg-aurora':
+      return (
+        <g opacity={0.35}>
+          <path d="M0 60 Q50 40 100 55 T200 50 L200 90 Q100 70 0 85 Z" fill="#9fc9ff" />
+          <path d="M0 70 Q60 55 120 68 T200 62 L200 100 Q80 85 0 95 Z" fill="#b89ad6" />
+          <path d="M0 80 Q40 72 80 78 T200 75 L200 110 Q100 95 0 105 Z" fill="#a9db8f" />
+        </g>
+      );
+    case 'bg-meadow':
+      return (
+        <g opacity={0.8}>
+          <rect x={0} y={160} width={200} height={40} fill="#7cb867" opacity={0.3} />
+          {[35, 55, 75, 125, 145, 165].map((x, i) => (
+            <g key={i}>
+              <line x1={x} y1={168} x2={x - 3} y2={158} stroke="#a9db8f" strokeWidth={2} strokeLinecap="round" />
+              <circle cx={x + 4} cy={162} r={3} fill={['#e79ad0', '#ffc96b', '#b89ad6'][i % 3]} opacity={0.8} />
+            </g>
+          ))}
+        </g>
+      );
+    default:
+      return null;
+  }
+}
 
 function Nest({ faded }: { faded: boolean }) {
   const op = faded ? 0.5 : 1;
@@ -706,7 +782,7 @@ function Accessory({ name, anchor }: { name: string; anchor: HeadAnchor }) {
   const { cx, cy, r } = anchor;
   const topY = cy - r;
   switch (name) {
-    case 'hat':
+    case 'acc-hat':
       return (
         <g>
           <path d={`M${cx - 20} ${topY + 4} L${cx} ${topY - 30} L${cx + 20} ${topY + 4} Z`} fill="var(--accent-berry, #d98aa2)" />
@@ -714,7 +790,7 @@ function Accessory({ name, anchor }: { name: string; anchor: HeadAnchor }) {
           <rect x={cx - 22} y={topY} width={44} height={7} rx={3.5} fill="var(--accent-peach, #ffb98a)" />
         </g>
       );
-    case 'crown':
+    case 'acc-crown':
       return (
         <path
           d={`M${cx - 22} ${topY + 6} L${cx - 22} ${topY - 12} L${cx - 11} ${topY - 2} L${cx} ${topY - 16} L${cx + 11} ${topY - 2} L${cx + 22} ${topY - 12} L${cx + 22} ${topY + 6} Z`}
@@ -723,7 +799,7 @@ function Accessory({ name, anchor }: { name: string; anchor: HeadAnchor }) {
           strokeWidth={1.5}
         />
       );
-    case 'bow':
+    case 'acc-bow':
       return (
         <g fill="var(--accent-berry, #d98aa2)" transform={`translate(${cx - r + 4}, ${topY + 4})`}>
           <path d="M0 0 L-12 -7 L-12 7 Z" />
@@ -731,7 +807,7 @@ function Accessory({ name, anchor }: { name: string; anchor: HeadAnchor }) {
           <circle cx={0} cy={0} r={4} fill="var(--accent-peach, #ffb98a)" />
         </g>
       );
-    case 'flower':
+    case 'acc-flower':
       return (
         <g transform={`translate(${cx + r - 6}, ${topY + 8})`}>
           {[0, 72, 144, 216, 288].map((a) => (
@@ -748,19 +824,97 @@ function Accessory({ name, anchor }: { name: string; anchor: HeadAnchor }) {
           <circle cx={0} cy={0} r={4} fill="var(--warning, #ffc96b)" />
         </g>
       );
-    case 'scarf':
+    case 'acc-scarf':
       return (
         <g fill="var(--secondary, #6fb6a6)">
           <rect x={cx - r} y={cy + r - 6} width={r * 2} height={12} rx={6} />
           <path d={`M${cx + r - 12} ${cy + r - 2} l14 22 l-11 3 l-9 -20 Z`} />
         </g>
       );
-    case 'glasses':
+    case 'acc-glasses':
       return (
         <g stroke="var(--text, #f6ead8)" strokeWidth={2.5} fill="none">
           <circle cx={cx - anchor.eyeDx} cy={cy - anchor.eyeR * 0.4} r={anchor.eyeR + 2} />
           <circle cx={cx + anchor.eyeDx} cy={cy - anchor.eyeR * 0.4} r={anchor.eyeR + 2} />
           <path d={`M${cx - anchor.eyeDx + anchor.eyeR + 2} ${cy - anchor.eyeR * 0.4} h${2 * anchor.eyeDx - 2 * (anchor.eyeR + 2)}`} />
+        </g>
+      );
+    case 'acc-halo':
+      return (
+        <ellipse
+          cx={cx}
+          cy={topY - 18}
+          rx={22}
+          ry={6}
+          fill="none"
+          stroke="var(--warning, #ffc96b)"
+          strokeWidth={3}
+          opacity={0.85}
+        />
+      );
+    case 'acc-horns':
+      return (
+        <g fill="var(--accent-berry, #d98aa2)">
+          <path d={`M${cx - 14} ${topY + 2} q-8 -18 -4 -28 q6 10 4 28 Z`} />
+          <path d={`M${cx + 14} ${topY + 2} q8 -18 4 -28 q-6 10 -4 28 Z`} />
+        </g>
+      );
+    case 'acc-antenna':
+      return (
+        <g stroke="var(--accent-lilac, #b79ad6)" strokeWidth={2.5} strokeLinecap="round" fill="var(--warning, #ffc96b)">
+          <path d={`M${cx - 8} ${topY + 4} q-6 -20 -2 -32`} fill="none" />
+          <path d={`M${cx + 8} ${topY + 4} q6 -20 2 -32`} fill="none" />
+          <circle cx={cx - 10} cy={topY - 28} r={3.5} />
+          <circle cx={cx + 10} cy={topY - 28} r={3.5} />
+        </g>
+      );
+    case 'acc-headphones':
+      return (
+        <g>
+          <path
+            d={`M${cx - anchor.eyeDx - 14} ${cy - 4} q-8 -16 0 -28 q8 4 8 16 v8 q-8 0 -8 -8`}
+            fill="none"
+            stroke="#5a4a6a"
+            strokeWidth={4}
+            strokeLinecap="round"
+          />
+          <path
+            d={`M${cx + anchor.eyeDx + 14} ${cy - 4} q8 -16 0 -28 q-8 4 -8 16 v8 q8 0 8 -8`}
+            fill="none"
+            stroke="#5a4a6a"
+            strokeWidth={4}
+            strokeLinecap="round"
+          />
+          <rect x={cx - anchor.eyeDx - 18} y={cy - 8} width={10} height={16} rx={4} fill="#6fb6a6" />
+          <rect x={cx + anchor.eyeDx + 8} y={cy - 8} width={10} height={16} rx={4} fill="#6fb6a6" />
+        </g>
+      );
+    case 'acc-wings':
+      return (
+        <g opacity={0.85}>
+          <ellipse cx={cx - r - 8} cy={cy + 10} rx={18} ry={28} fill="#b79ad6" transform={`rotate(-20 ${cx - r - 8} ${cy + 10})`} />
+          <ellipse cx={cx + r + 8} cy={cy + 10} rx={18} ry={28} fill="#b79ad6" transform={`rotate(20 ${cx + r + 8} ${cy + 10})`} />
+        </g>
+      );
+    case 'acc-star-pin':
+      return (
+        <g transform={`translate(${cx + r - 4}, ${topY + 12})`} fill="var(--warning, #ffc96b)">
+          <path d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" />
+        </g>
+      );
+    case 'acc-leaf-crown':
+      return (
+        <g fill="#7cb867" stroke="#5a9040" strokeWidth={1}>
+          {[0, 40, 80, 120, 160, 200, 240, 280, 320].map((a) => (
+            <ellipse
+              key={a}
+              cx={cx}
+              cy={topY - 4}
+              rx={5}
+              ry={10}
+              transform={`rotate(${a} ${cx} ${topY - 4})`}
+            />
+          ))}
         </g>
       );
     default:

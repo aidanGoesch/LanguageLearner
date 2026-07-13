@@ -16,7 +16,7 @@ export function createEggCreature(name = 'Pip'): Creature {
     happiness: 75,
     status: 'happy',
     lastFedAt: Date.now(),
-    cosmetics: { skin: 'skin-default', accessories: [] },
+    cosmetics: { skin: 'skin-default', accessories: [], background: 'bg-nest' },
   };
 }
 

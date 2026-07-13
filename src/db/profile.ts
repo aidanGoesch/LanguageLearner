@@ -10,7 +10,7 @@ export const DEFAULT_PROFILE: Profile = {
   freezesAvailable: 0,
   lastFreezeAccrualDate: '',
   coins: 0,
-  ownedCosmetics: ['skin-default'],
+  ownedCosmetics: ['skin-default', 'bg-nest'],
   totalReviews: 0,
   usageHours: Array.from({ length: 24 }, () => 0),
   notificationsEnabled: false,

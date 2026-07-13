@@ -42,6 +42,12 @@ function interleave(reviews: Card[], news: Card[]): Card[] {
   return result;
 }
 
+/** Harder / closer-to-forgotten cards first within a state group. */
+function compareReviewPriority(a: Card, b: Card): number {
+  if (a.stability !== b.stability) return a.stability - b.stability;
+  return a.due - b.due;
+}
+
 export function countNewCardsStudiedToday(
   reviewLogs: { reviewedAt: number; previousState: string }[],
   now = Date.now(),
@@ -53,15 +59,20 @@ export function countNewCardsStudiedToday(
   ).length;
 }
 
-export function buildQueue(
+/** Full prioritized queue before session chunk cap. */
+export function buildFullQueue(
   cards: Card[],
   settings: AppSettings,
   newCardsStudiedToday: number,
   now = Date.now(),
 ): Card[] {
-  const dueReviews = cards
-    .filter((c) => c.state !== 'New' && c.due <= now)
-    .sort((a, b) => a.due - b.due);
+  const due = cards.filter((c) => c.state !== 'New' && c.due <= now);
+
+  const learningRelearning = due
+    .filter((c) => c.state === 'Learning' || c.state === 'Relearning')
+    .sort(compareReviewPriority);
+
+  const reviews = due.filter((c) => c.state === 'Review').sort(compareReviewPriority);
 
   const remainingNewBudget = Math.max(0, settings.newCardsPerDay - newCardsStudiedToday);
   const newCards = cards
@@ -69,7 +80,18 @@ export function buildQueue(
     .sort((a, b) => a.createdAt - b.createdAt)
     .slice(0, remainingNewBudget);
 
-  return interleave(dueReviews, newCards);
+  return [...learningRelearning, ...interleave(reviews, newCards)];
+}
+
+export function buildQueue(
+  cards: Card[],
+  settings: AppSettings,
+  newCardsStudiedToday: number,
+  now = Date.now(),
+): Card[] {
+  const full = buildFullQueue(cards, settings, newCardsStudiedToday, now);
+  const limit = Math.max(1, settings.cardsPerSession);
+  return full.slice(0, limit);
 }
 
 export function countDueCards(cards: Card[], now = Date.now()): number {
@@ -150,5 +172,5 @@ export function countReadyToStudy(
   newCardsStudiedToday: number,
   now = Date.now(),
 ): number {
-  return buildQueue(cards, settings, newCardsStudiedToday, now).length;
+  return buildFullQueue(cards, settings, newCardsStudiedToday, now).length;
 }

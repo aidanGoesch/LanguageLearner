@@ -1,6 +1,7 @@
 import type { Cosmetic, CosmeticType, Creature } from '../types';
 
 export const COSMETIC_CATALOG: Cosmetic[] = [
+  // Skins
   {
     id: 'skin-default',
     name: 'Ember coat',
@@ -16,6 +17,34 @@ export const COSMETIC_CATALOG: Cosmetic[] = [
     description: 'Soft forest green — smells like rain.',
   },
   {
+    id: 'skin-berry',
+    name: 'Berry blush',
+    type: 'skin',
+    price: 55,
+    description: 'Sweet pink with rosy cheeks.',
+  },
+  {
+    id: 'skin-frost',
+    name: 'Frost shimmer',
+    type: 'skin',
+    price: 65,
+    description: 'Cool blue like morning dew.',
+  },
+  {
+    id: 'skin-ash',
+    name: 'Ash coat',
+    type: 'skin',
+    price: 70,
+    description: 'Muted grey-brown, soft and calm.',
+  },
+  {
+    id: 'skin-gold',
+    name: 'Golden shell',
+    type: 'skin',
+    price: 90,
+    description: 'Honey-bright plates that catch lamplight.',
+  },
+  {
     id: 'skin-dusk',
     name: 'Dusk shimmer',
     type: 'skin',
@@ -23,25 +52,68 @@ export const COSMETIC_CATALOG: Cosmetic[] = [
     description: 'Twilight purple with a faint glow.',
   },
   {
-    id: 'skin-amber',
-    name: 'Amber shell',
+    id: 'skin-ocean',
+    name: 'Ocean tide',
     type: 'skin',
-    price: 120,
-    description: 'Honey-bright plates that catch lamplight.',
+    price: 95,
+    description: 'Deep teal like tide pools.',
   },
   {
-    id: 'acc-leaf-crown',
-    name: 'Leaf crown',
+    id: 'skin-rose',
+    name: 'Rose petal',
+    type: 'skin',
+    price: 100,
+    description: 'Warm coral pink, soft as petals.',
+  },
+  {
+    id: 'skin-mint',
+    name: 'Mint frost',
+    type: 'skin',
+    price: 110,
+    description: 'Fresh pale green with a cool sheen.',
+  },
+  {
+    id: 'skin-shadow',
+    name: 'Shadow cloak',
+    type: 'skin',
+    price: 130,
+    description: 'Deep violet-grey for night owls.',
+  },
+  {
+    id: 'skin-cream',
+    name: 'Cream puff',
+    type: 'skin',
+    price: 160,
+    description: 'Ivory white, fluffy and bright.',
+  },
+  // Accessories
+  {
+    id: 'acc-hat',
+    name: 'Party hat',
     type: 'accessory',
     price: 35,
-    description: 'A circlet of den ferns.',
+    description: 'A pointy hat for celebration nights.',
   },
   {
-    id: 'acc-star-pin',
-    name: 'Star pin',
+    id: 'acc-crown',
+    name: 'Golden crown',
     type: 'accessory',
-    price: 55,
-    description: 'Tiny brass star for good recall nights.',
+    price: 75,
+    description: 'Fit for a den royalty.',
+  },
+  {
+    id: 'acc-bow',
+    name: 'Ribbon bow',
+    type: 'accessory',
+    price: 30,
+    description: 'A perky bow tied just so.',
+  },
+  {
+    id: 'acc-flower',
+    name: 'Den flower',
+    type: 'accessory',
+    price: 40,
+    description: 'A tiny bloom tucked behind the ear.',
   },
   {
     id: 'acc-scarf',
@@ -51,46 +123,103 @@ export const COSMETIC_CATALOG: Cosmetic[] = [
     description: 'Hand-loomed, slightly too long.',
   },
   {
-    id: 'habit-lantern',
-    name: 'Lantern nook',
-    type: 'habitat',
-    price: 90,
-    description: 'A hanging lantern for the home den.',
+    id: 'acc-glasses',
+    name: 'Round glasses',
+    type: 'accessory',
+    price: 50,
+    description: 'Scholarly specs for serious study.',
   },
   {
-    id: 'habit-mushroom',
+    id: 'acc-halo',
+    name: 'Soft halo',
+    type: 'accessory',
+    price: 85,
+    description: 'A gentle golden ring above.',
+  },
+  {
+    id: 'acc-horns',
+    name: 'Little horns',
+    type: 'accessory',
+    price: 60,
+    description: 'Tiny curved horns, very cute.',
+  },
+  {
+    id: 'acc-antenna',
+    name: 'Bug antenna',
+    type: 'accessory',
+    price: 45,
+    description: 'Wobbly feelers that twitch.',
+  },
+  {
+    id: 'acc-headphones',
+    name: 'Den headphones',
+    type: 'accessory',
+    price: 70,
+    description: 'For focus mode study sessions.',
+  },
+  {
+    id: 'acc-wings',
+    name: 'Tiny wings',
+    type: 'accessory',
+    price: 95,
+    description: 'Fluttery wings — mostly decorative.',
+  },
+  {
+    id: 'acc-star-pin',
+    name: 'Star pin',
+    type: 'accessory',
+    price: 55,
+    description: 'Tiny brass star for good recall nights.',
+  },
+  {
+    id: 'acc-leaf-crown',
+    name: 'Leaf crown',
+    type: 'accessory',
+    price: 35,
+    description: 'A circlet of den ferns.',
+  },
+  // Backgrounds
+  {
+    id: 'bg-nest',
+    name: 'Classic nest',
+    type: 'background',
+    price: 0,
+    description: 'The cozy woven nest every hatchling starts in.',
+  },
+  {
+    id: 'bg-lantern',
+    name: 'Lantern nook',
+    type: 'background',
+    price: 90,
+    description: 'A hanging lantern casting warm light.',
+  },
+  {
+    id: 'bg-mushroom',
     name: 'Glow mushrooms',
-    type: 'habitat',
+    type: 'background',
     price: 70,
     description: 'Bioluminescent cluster — no watering.',
   },
   {
-    id: 'back-ember',
-    name: 'Ember backs',
-    type: 'cardback',
-    price: 40,
-    description: 'Warm gradient card reverse.',
+    id: 'bg-stars',
+    name: 'Star field',
+    type: 'background',
+    price: 100,
+    description: 'A twinkling night sky behind the den.',
   },
   {
-    id: 'back-fern',
-    name: 'Fern backs',
-    type: 'cardback',
-    price: 40,
-    description: 'Leafy pattern for study cards.',
+    id: 'bg-aurora',
+    name: 'Aurora bands',
+    type: 'background',
+    price: 120,
+    description: 'Shifting ribbons of northern light.',
   },
   {
-    id: 'feed-sparkle',
-    name: 'Sparkle feed',
-    type: 'feedAnim',
-    price: 50,
-    description: 'Golden crumbs when your companion eats.',
-  },
-  {
-    id: 'feed-bubbles',
-    name: 'Bubble feed',
-    type: 'feedAnim',
-    price: 50,
-    description: 'Playful bubbles on feed day.',
+    id: 'bg-meadow',
+    name: 'Meadow edge',
+    type: 'background',
+    price: 80,
+    description: 'Soft grass and wildflowers at the den mouth.',
   },
 ];
 
@@ -141,7 +270,12 @@ export function toggleAccessory(creature: Creature, accessoryId: string, owned: 
   return { ...creature, cosmetics: { ...creature.cosmetics, accessories } };
 }
 
-export type CosmeticCategory = 'skins' | 'accessories' | 'habitat' | 'cardbacks' | 'feed';
+export function equipBackground(creature: Creature, backgroundId: string, owned: string[]): Creature | null {
+  if (!owned.includes(backgroundId)) return null;
+  return { ...creature, cosmetics: { ...creature.cosmetics, background: backgroundId } };
+}
+
+export type CosmeticCategory = 'skins' | 'accessories' | 'backgrounds';
 
 export function categoryForType(type: CosmeticType): CosmeticCategory {
   switch (type) {
@@ -149,19 +283,13 @@ export function categoryForType(type: CosmeticType): CosmeticCategory {
       return 'skins';
     case 'accessory':
       return 'accessories';
-    case 'habitat':
-      return 'habitat';
-    case 'cardback':
-      return 'cardbacks';
-    case 'feedAnim':
-      return 'feed';
+    case 'background':
+      return 'backgrounds';
   }
 }
 
 export const CATEGORY_LABELS: Record<CosmeticCategory, string> = {
   skins: 'Coats',
   accessories: 'Trinkets',
-  habitat: 'Den decor',
-  cardbacks: 'Card backs',
-  feed: 'Feed flair',
+  backgrounds: 'Den decor',
 };

@@ -21,6 +21,11 @@
   font-weight: 600;
 }
 
+.session-summary__lead--waiting {
+  color: var(--accent);
+  font-weight: 500;
+}
+
 .session-summary__reel {
   padding: 1.25rem;
   background: var(--surface);

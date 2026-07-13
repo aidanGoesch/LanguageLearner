@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Card, CreatureStage, CreatureStatus, Grade } from '../types';
 import { formatDue } from '../utils/cards';
+import { useConfirm } from '../context/ConfirmContext';
 import { GradeButtons } from './GradeButtons';
 import { ComboMeter } from './ComboMeter';
 import { ParticleBurst } from './ParticleBurst';
@@ -49,6 +50,7 @@ interface ReviewSessionProps {
   creatureAccessories?: string[];
   onGrade: (card: Card, grade: Grade) => Promise<Card>;
   onComplete: () => void;
+  onEndSession?: () => void;
 }
 
 function playGradeFeedback(grade: Grade, soundEnabled: boolean, hapticsEnabled: boolean): void {
@@ -73,7 +75,9 @@ export function ReviewSession({
   creatureAccessories,
   onGrade,
   onComplete,
+  onEndSession,
 }: ReviewSessionProps) {
+  const confirm = useConfirm();
   const [queue, setQueue] = useState(cards);
   const [reviewed, setReviewed] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -247,6 +251,25 @@ export function ReviewSession({
           : { scale: 1 };
   const cardPopDuration = termGlow === 'easy' ? 0.45 : termGlow === 'struggled' ? 0.35 : 0.28;
 
+  const handleEndSession = async () => {
+    if (grading || finishing || !onEndSession) return;
+
+    const message =
+      reviewed > 0
+        ? `You've reviewed ${reviewed} card${reviewed !== 1 ? 's' : ''}. Progress and rewards are saved. Leave this session?`
+        : 'Leave this study session?';
+
+    const ok = await confirm({
+      title: 'End session?',
+      message,
+      confirmLabel: 'Leave',
+      cancelLabel: 'Keep studying',
+      destructive: reviewed > 0,
+    });
+
+    if (ok) onEndSession();
+  };
+
   return (
     <div className="review-session" ref={sessionRef}>
       {flashGrade && (
@@ -257,21 +280,38 @@ export function ReviewSession({
         />
       )}
       <ComboMeter combo={combo} />
-      <div className="review-session__top">
-        <div className="review-session__progress">
-          {reviewed} / {total}
+      <div className="review-session__header">
+        {onEndSession ? (
+          <button
+            type="button"
+            className="review-session__end"
+            onClick={handleEndSession}
+            disabled={grading || finishing}
+            aria-label="End session"
+          >
+            Leave
+          </button>
+        ) : (
+          <span className="review-session__end-spacer" aria-hidden />
+        )}
+        <div className="review-session__top">
+          <div className="review-session__progress">
+            {reviewed} / {total}
+          </div>
+          <Creature
+            stage={creatureStage}
+            status={creatureStatus}
+            skin={creatureSkin}
+            accessories={creatureAccessories}
+            reaction={reaction}
+            size={56}
+            onReactionEnd={handleReactionEnd}
+          />
         </div>
-        <Creature
-          stage={creatureStage}
-          status={creatureStatus}
-          skin={creatureSkin}
-          accessories={creatureAccessories}
-          reaction={reaction}
-          size={72}
-          onReactionEnd={handleReactionEnd}
-        />
+        <span className="review-session__end-spacer" aria-hidden />
       </div>
 
+      <div className="review-session__body">
       {feedback && (
         <motion.p
           className={`review-session__feedback review-session__feedback--${lastGrade ?? 'struggled'}`}
@@ -309,6 +349,7 @@ export function ReviewSession({
             </div>
           )}
         </motion.button>
+      </div>
       </div>
       {flipped && !finishing && <GradeButtons onGrade={handleGrade} disabled={grading} />}
     </div>

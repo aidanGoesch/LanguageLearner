@@ -35,6 +35,8 @@ export interface ReviewLog {
 
 export interface AppSettings {
   newCardsPerDay: number;
+  /** Max cards per study session chunk (mobile-friendly batch size). */
+  cardsPerSession: number;
   requestRetention: number;
 }
 
@@ -65,6 +67,7 @@ export interface Creature {
   cosmetics: {
     skin: string;
     accessories: string[];
+    background: string;
   };
 }
 
@@ -85,7 +88,7 @@ export interface Profile {
   hapticsEnabled: boolean;
 }
 
-export type CosmeticType = 'skin' | 'accessory' | 'habitat' | 'cardback' | 'feedAnim';
+export type CosmeticType = 'skin' | 'accessory' | 'background';
 
 export interface Cosmetic {
   id: string;
@@ -121,6 +124,8 @@ export interface SessionGameStats {
   comboPeak: number;
   variableRewards: Array<{ label: string; kind: 'coins' | 'cosmetic' }>;
   dayCompleted: boolean;
+  endedEarly?: boolean;
+  remainingCards?: number;
   streakAfter?: number;
   streakMilestone?: number | null;
   evolved?: boolean;

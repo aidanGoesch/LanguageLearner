@@ -13,33 +13,39 @@ export function checkEvolution(creature: Creature, profile: Profile): EvolutionR
     return { creature, evolved: false };
   }
 
-  const idx = STAGE_ORDER.indexOf(creature.stage);
-  const nextStage = STAGE_ORDER[idx + 1];
-  if (!nextStage) return { creature, evolved: false };
+  let current = creature;
+  let evolved = false;
+  let fromStage: CreatureStage | undefined;
+  let toStage: CreatureStage | undefined;
 
-  const xpNeeded = XP_TO_ADVANCE[creature.stage];
-  const streakNeeded = STREAK_GATE[nextStage];
+  for (;;) {
+    const idx = STAGE_ORDER.indexOf(current.stage);
+    const nextStage = STAGE_ORDER[idx + 1];
+    if (!nextStage) break;
 
-  if (creature.xpTowardNextStage < xpNeeded) {
-    return { creature, evolved: false };
+    const xpNeeded = XP_TO_ADVANCE[current.stage];
+    const streakNeeded = STREAK_GATE[nextStage];
+
+    if (current.xpTowardNextStage < xpNeeded) break;
+    if (profile.currentStreak < streakNeeded) break;
+
+    if (!evolved) {
+      fromStage = current.stage;
+    }
+    toStage = nextStage;
+    evolved = true;
+
+    current = {
+      ...current,
+      stage: nextStage,
+      xpTowardNextStage: current.xpTowardNextStage - xpNeeded,
+      happiness: Math.min(100, current.happiness + 25),
+    };
   }
-  if (profile.currentStreak < streakNeeded) {
-    return { creature, evolved: false };
-  }
 
-  const evolvedCreature: Creature = {
-    ...creature,
-    stage: nextStage,
-    xpTowardNextStage: creature.xpTowardNextStage - xpNeeded,
-    happiness: Math.min(100, creature.happiness + 25),
-  };
-
-  return {
-    creature: evolvedCreature,
-    evolved: true,
-    fromStage: creature.stage,
-    toStage: nextStage,
-  };
+  return evolved
+    ? { creature: current, evolved: true, fromStage, toStage }
+    : { creature, evolved: false };
 }
 
 export function xpProgress(creature: Creature): { current: number; needed: number; ratio: number } {

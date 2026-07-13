@@ -6,6 +6,7 @@ import {
   CATEGORY_LABELS,
   COSMETIC_CATALOG,
   categoryForType,
+  equipBackground,
   equipSkin,
   purchaseCosmetic,
   toggleAccessory,
@@ -14,7 +15,7 @@ import {
 import type { Cosmetic, Creature as CreatureType, Profile } from '../types';
 import './Shop.css';
 
-const CATEGORIES: CosmeticCategory[] = ['skins', 'accessories', 'habitat', 'cardbacks', 'feed'];
+const CATEGORIES: CosmeticCategory[] = ['skins', 'accessories', 'backgrounds'];
 
 export function Shop() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -70,8 +71,13 @@ export function Shop() {
         setCreature(next);
         flash('Accessory toggled.');
       }
-    } else {
-      flash('Equipped in den (cosmetic only).');
+    } else if (item.type === 'background') {
+      const next = equipBackground(creature, item.id, profile.ownedCosmetics);
+      if (next) {
+        await updateCreature(next);
+        setCreature(next);
+        flash(`Den set to ${item.name}.`);
+      }
     }
   };
 
@@ -95,6 +101,7 @@ export function Shop() {
             status={creature.status}
             skin={creature.cosmetics.skin}
             accessories={creature.cosmetics.accessories}
+            background={creature.cosmetics.background}
             size={100}
           />
         </div>
@@ -122,7 +129,9 @@ export function Shop() {
                 ? creature.cosmetics.skin === item.id
                 : item.type === 'accessory'
                   ? creature.cosmetics.accessories.includes(item.id)
-                  : false;
+                  : item.type === 'background'
+                    ? creature.cosmetics.background === item.id
+                    : false;
             return (
               <li key={item.id} className="shop__item">
                 <div className="shop__item-head">
@@ -141,7 +150,7 @@ export function Shop() {
                       Buy
                     </button>
                   )}
-                  {owned && (item.type === 'skin' || item.type === 'accessory') && (
+                  {owned && (
                     <button
                       type="button"
                       className={`btn btn--sm ${equipped ? 'btn--secondary' : 'btn--ghost'}`}
@@ -149,9 +158,6 @@ export function Shop() {
                     >
                       {equipped ? 'Equipped' : 'Equip'}
                     </button>
-                  )}
-                  {owned && item.type !== 'skin' && item.type !== 'accessory' && (
-                    <span className="shop__owned">Owned</span>
                   )}
                 </div>
               </li>

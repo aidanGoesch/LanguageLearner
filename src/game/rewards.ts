@@ -15,7 +15,7 @@ const COIN_FLAVOR = [
 export function rollVariableReward(ownedCosmetics: string[]): VariableReward | null {
   if (Math.random() >= VARIABLE_REWARD_CHANCE) return null;
 
-  const rollCosmetic = Math.random() < 0.22;
+  const rollCosmetic = Math.random() < 0.08;
   if (rollCosmetic) {
     const item = getRandomUnownedCosmetic(ownedCosmetics);
     if (item) {

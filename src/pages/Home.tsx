@@ -32,6 +32,7 @@ import './Home.css';
 export function Home() {
   const [stacks, setStacks] = useState<Stack[]>([]);
   const [dueCount, setDueCount] = useState(0);
+  const [sessionCap, setSessionCap] = useState(20);
   const [added, setAdded] = useState(false);
   const [creature, setCreature] = useState<CreatureType | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -50,6 +51,7 @@ export function Home() {
     setStacks(allStacks);
     const newToday = countNewCardsStudiedToday(logs);
     setDueCount(countReadyToStudy(allCards, settings, newToday));
+    setSessionCap(settings.cardsPerSession);
     setProfile(prof);
 
     let updated = applyHungerDecay(crit);
@@ -116,6 +118,7 @@ export function Home() {
               status={creature.status}
               skin={creature.cosmetics.skin}
               accessories={creature.cosmetics.accessories}
+              background={creature.cosmetics.background}
               size={220}
             />
             <div className="home__creature-info">
@@ -148,7 +151,9 @@ export function Home() {
                   </div>
                   {nextStreakGate != null && xp.needed > 0 && (
                     <p className="home__gate-hint">
-                      Next evolution needs {xp.needed - xp.current} more XP & {nextStreakGate}-day streak
+                      {xp.current >= xp.needed
+                        ? `XP ready! Reach a ${nextStreakGate}-day streak to evolve (${profile.currentStreak}/${nextStreakGate}).`
+                        : `Next evolution: ${Math.max(0, xp.needed - xp.current)} XP & ${nextStreakGate}-day streak.`}
                     </p>
                   )}
                 </div>
@@ -186,7 +191,9 @@ export function Home() {
             <>
               <p className="home__due">
                 {dueCount > 0
-                  ? `${dueCount} card${dueCount !== 1 ? 's' : ''} rustling in the queue`
+                  ? dueCount > sessionCap
+                    ? `${dueCount} cards waiting · ${sessionCap} per session`
+                    : `${dueCount} card${dueCount !== 1 ? 's' : ''} rustling in the queue`
                   : 'All caught up for now — den is peaceful'}
               </p>
               <Link to="/study" className="btn btn--primary btn--block btn--lg home__study-cta">
