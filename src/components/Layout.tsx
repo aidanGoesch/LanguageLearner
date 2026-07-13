@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { APP_NAME } from '../game/constants';
 import './Layout.css';
 
 interface LayoutProps {
@@ -19,7 +20,7 @@ export function Layout({ children, title, hideNav }: LayoutProps) {
             <h1 className="layout__title">{title}</h1>
           ) : (
             <Link to="/" className="layout__brand">
-              Flashcards
+              {APP_NAME}
             </Link>
           )}
         </header>
@@ -28,13 +29,13 @@ export function Layout({ children, title, hideNav }: LayoutProps) {
       {!hideNav && (
         <nav className="layout__nav">
           <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
-            Home
+            Den
           </Link>
           <Link to="/study" className={location.pathname.startsWith('/study') ? 'active' : ''}>
             Study
           </Link>
-          <Link to="/stacks" className={location.pathname.startsWith('/stacks') ? 'active' : ''}>
-            Stacks
+          <Link to="/shop" className={location.pathname === '/shop' ? 'active' : ''}>
+            Shop
           </Link>
           <Link to="/stats" className={location.pathname === '/stats' ? 'active' : ''}>
             Stats
