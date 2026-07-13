@@ -1,19 +1,23 @@
 import { createEmptyCard } from 'ts-fsrs';
-import type { BackupData, Card, ImportMode, Stack } from '../types';
+import { fromFsrsCard } from '../fsrs/mapping';
+import type { BackupData, Card, Creature, ImportMode, Profile, Stack } from '../types';
 import { clearCards, getAllCards, putCards } from './cards';
+import { createEggCreature, getCreature, updateCreature } from './creature';
+import { DEFAULT_PROFILE, getProfile, updateProfile } from './profile';
 import { clearReviewLogs, getAllReviewLogs, putReviewLogs } from './reviewLogs';
 import { getSettings, updateSettings } from './settings';
 import { clearStacks, getAllStacks, putStacks } from './stacks';
-import { fromFsrsCard } from '../fsrs/mapping';
 
-const BACKUP_VERSION = 1;
+const BACKUP_VERSION = 3;
 
 export async function exportAll(): Promise<BackupData> {
-  const [stacks, cards, reviewLogs, settings] = await Promise.all([
+  const [stacks, cards, reviewLogs, settings, creature, profile] = await Promise.all([
     getAllStacks(),
     getAllCards(),
     getAllReviewLogs(),
     getSettings(),
+    getCreature(),
+    getProfile(),
   ]);
 
   return {
@@ -23,6 +27,8 @@ export async function exportAll(): Promise<BackupData> {
     cards,
     reviewLogs,
     settings,
+    creature,
+    profile,
   };
 }
 
@@ -31,7 +37,7 @@ export function downloadBackup(data: BackupData): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `flashcards-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `den-backup-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -41,13 +47,26 @@ function createDefaultFsrsFields(now: number) {
   return fromFsrsCard(empty);
 }
 
+function defaultCreature(): Creature {
+  return createEggCreature();
+}
+
+function defaultProfile(): Profile {
+  return { ...DEFAULT_PROFILE };
+}
+
 export async function importAll(data: BackupData, mode: ImportMode): Promise<{ stacks: number; cards: number; skipped: number }> {
+  const creature = data.creature ?? defaultCreature();
+  const profile = data.profile ?? defaultProfile();
+
   if (mode === 'overwrite') {
     await Promise.all([clearStacks(), clearCards(), clearReviewLogs()]);
     await putStacks(data.stacks);
     await putCards(data.cards);
     await putReviewLogs(data.reviewLogs);
     await updateSettings(data.settings);
+    await updateCreature(creature);
+    await updateProfile(profile);
     return { stacks: data.stacks.length, cards: data.cards.length, skipped: 0 };
   }
 
@@ -132,6 +151,16 @@ export async function importAll(data: BackupData, mode: ImportMode): Promise<{ s
 
   const currentSettings = await getSettings();
   await updateSettings({ ...currentSettings, ...data.settings });
+
+  if (data.creature) await updateCreature(data.creature);
+  if (data.profile) {
+    const current = await getProfile();
+    await updateProfile({
+      ...current,
+      ...data.profile,
+      ownedCosmetics: [...new Set([...current.ownedCosmetics, ...data.profile.ownedCosmetics])],
+    });
+  }
 
   return { stacks: newStackCount, cards: newCardCount, skipped };
 }
