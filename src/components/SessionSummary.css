@@ -1,0 +1,101 @@
+.session-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.session-summary__title {
+  font-size: 1.5rem;
+  margin: 0;
+  color: var(--accent);
+}
+
+.session-summary__lead {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.session-summary__streak {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.session-summary__reel {
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.session-summary__total {
+  margin: 0 0 1rem;
+  font-weight: 600;
+}
+
+.session-summary__breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.session-summary__stat {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+}
+
+.session-summary__count {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.session-summary__label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.session-summary__stat--forgot .session-summary__count {
+  color: var(--muted-blue);
+}
+
+.session-summary__stat--struggled .session-summary__count {
+  color: var(--success);
+}
+
+.session-summary__stat--easy .session-summary__count {
+  color: var(--accent);
+}
+
+.session-summary__highlights {
+  margin: 0;
+  padding-left: 1.125rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.session-summary__forecast {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.session-summary__forecast p {
+  margin: 0.25rem 0;
+}
+
+.session-summary__forecast-note {
+  font-style: italic;
+}
+
+.session-summary__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
