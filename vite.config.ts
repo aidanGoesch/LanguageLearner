@@ -11,12 +11,15 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons.svg'],
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       manifest: {
-        name: 'Flashcards - Language Learner',
-        short_name: 'Flashcards',
-        description: 'Offline FSRS flashcard app for language learning',
-        theme_color: '#2563eb',
-        background_color: '#f5f4f1',
+        name: 'Den — Language Learner',
+        short_name: 'Den',
+        description: 'Offline FSRS flashcards with a cozy creature companion',
+        theme_color: '#2a2218',
+        background_color: '#1c1610',
         display: 'standalone',
         orientation: 'portrait',
         start_url: repoBase,
@@ -40,8 +43,12 @@ export default defineConfig(({ mode }) => ({
           },
         ],
       },
-      workbox: {
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module',
       },
     }),
   ],
