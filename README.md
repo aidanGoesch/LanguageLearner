@@ -1,32 +1,38 @@
-# React + TypeScript + Vite
+# Den — Language Learner
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Offline FSRS flashcard app with a cozy creature companion. Data stays in your browser (IndexedDB); no backend API.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Open **http://localhost:5173/** — the app should load immediately with the home den screen.
+
+Production preview (matches GitHub Pages paths):
+
+```bash
+npm run build
+npm run preview
+```
+
+Open **http://localhost:4173/LanguageLearner/**
+
+## Deployed site
+
+GitHub Pages URL: **https://aidanGoesch.github.io/LanguageLearner/**
+
+Built assets live in the [`docs/`](docs/) folder. In the repo **Settings → Pages**, set:
+
+- **Source:** Deploy from a branch
+- **Branch:** `main`
+- **Folder:** `/docs`
+
+If Pages is set to `/ (root)`, the site serves the dev `index.html` and shows a blank page.
+
+## Troubleshooting
+
+- **`api/v1/courses` 404** — that endpoint is not part of this app. Check you are on `localhost:5173` or the GitHub Pages URL above, not another project.
+- **Blank page on GitHub Pages** — confirm Pages uses the `/docs` folder, then hard-refresh or clear the site service worker (DevTools → Application → Service Workers).
