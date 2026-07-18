@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
-import type { Card, ReviewLog, Stack } from '../types';
+import type { AppSettings, Card, ReviewLog, Stack } from '../types';
 import {
   computeRetentionRate,
   computeStreak,
   countDueCards,
   countDueThisWeek,
   countDueToday,
+  countNewCardsStudiedToday,
+  countReadyToStudy,
 } from '../fsrs/queue';
 import './StatsDashboard.css';
 
@@ -13,21 +15,23 @@ interface StatsDashboardProps {
   cards: Card[];
   stacks: Stack[];
   reviewLogs: ReviewLog[];
+  settings: AppSettings;
 }
 
-export function StatsDashboard({ cards, stacks, reviewLogs }: StatsDashboardProps) {
+export function StatsDashboard({ cards, stacks, reviewLogs, settings }: StatsDashboardProps) {
   const now = Date.now();
+  const newToday = useMemo(() => countNewCardsStudiedToday(reviewLogs, now), [reviewLogs, now]);
 
   const stats = useMemo(
     () => ({
       total: cards.length,
       dueToday: countDueToday(cards, now),
-      dueNow: countDueCards(cards, now),
+      dueNow: countReadyToStudy(cards, settings, newToday, now),
       dueThisWeek: countDueThisWeek(cards, now),
       retention: computeRetentionRate(reviewLogs, 30, now),
       streak: computeStreak(reviewLogs, now),
     }),
-    [cards, reviewLogs, now],
+    [cards, reviewLogs, settings, newToday, now],
   );
 
   const perStack = useMemo(() => {

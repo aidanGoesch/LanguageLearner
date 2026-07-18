@@ -16,7 +16,7 @@ import {
   updateProfile,
 } from '../db';
 import {
-  buildQueue,
+  buildSessionQueue,
   countNewCardsStudiedToday,
   countReadyToStudy,
   filterCardsByScope,
@@ -98,9 +98,9 @@ export function Study() {
     const { cards, stackList, logs, settings } = await loadData();
     const scoped = filterCardsByScope(cards, stackList, scope);
     const newToday = countNewCardsStudiedToday(logs);
-    const built = buildQueue(scoped, settings, newToday);
+    const built = buildSessionQueue(scoped, settings, newToday);
     if (built.length === 0) {
-      alert('No cards due for this selection. Check back later!');
+      alert('No cards available to study for this selection. Add cards or check back later!');
       return;
     }
     comboRef.current = 0;

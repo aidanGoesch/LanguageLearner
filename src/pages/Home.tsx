@@ -14,7 +14,7 @@ import {
   updateCreature,
 } from '../db';
 import { createCard } from '../db/cards';
-import { countNewCardsStudiedToday, countReadyToStudy } from '../fsrs/queue';
+import { countEarlyReviewable, countNewCardsStudiedToday, countReadyToStudy } from '../fsrs/queue';
 import { createNewCardFields } from '../utils/cards';
 import {
   adoptCreature,
@@ -32,6 +32,8 @@ import './Home.css';
 export function Home() {
   const [stacks, setStacks] = useState<Stack[]>([]);
   const [dueCount, setDueCount] = useState(0);
+  const [earlyReviewable, setEarlyReviewable] = useState(0);
+  const [totalCards, setTotalCards] = useState(0);
   const [sessionCap, setSessionCap] = useState(20);
   const [added, setAdded] = useState(false);
   const [creature, setCreature] = useState<CreatureType | null>(null);
@@ -51,6 +53,8 @@ export function Home() {
     setStacks(allStacks);
     const newToday = countNewCardsStudiedToday(logs);
     setDueCount(countReadyToStudy(allCards, settings, newToday));
+    setEarlyReviewable(countEarlyReviewable(allCards));
+    setTotalCards(allCards.length);
     setSessionCap(settings.cardsPerSession);
     setProfile(prof);
 
@@ -194,10 +198,14 @@ export function Home() {
                   ? dueCount > sessionCap
                     ? `${dueCount} cards waiting · ${sessionCap} per session`
                     : `${dueCount} card${dueCount !== 1 ? 's' : ''} rustling in the queue`
-                  : 'All caught up for now — den is peaceful'}
+                  : totalCards === 0
+                    ? 'No cards yet — quick add below to start learning'
+                    : earlyReviewable > 0
+                      ? `All caught up — ${earlyReviewable} card${earlyReviewable !== 1 ? 's' : ''} available for early review`
+                      : 'All caught up for now — den is peaceful'}
               </p>
               <Link to="/study" className="btn btn--primary btn--block btn--lg home__study-cta">
-                {dueCount > 0 ? 'Study now' : 'Review anyway'}
+                {dueCount > 0 ? 'Study now' : totalCards === 0 ? 'Start studying' : 'Review anyway'}
               </Link>
               <Link to="/shop" className="btn btn--secondary btn--block">
                 Visit shop

@@ -94,6 +94,32 @@ export function buildQueue(
   return full.slice(0, limit);
 }
 
+/** Session queue: due/new first, then soonest early reviews up to cardsPerSession. */
+export function buildSessionQueue(
+  cards: Card[],
+  settings: AppSettings,
+  newCardsStudiedToday: number,
+  now = Date.now(),
+): Card[] {
+  const queue = buildFullQueue(cards, settings, newCardsStudiedToday, now);
+  const limit = Math.max(1, settings.cardsPerSession);
+
+  if (queue.length >= limit) {
+    return queue.slice(0, limit);
+  }
+
+  const inQueue = new Set(queue.map((c) => c.id));
+  const early = cards
+    .filter((c) => c.state !== 'New' && c.due > now && !inQueue.has(c.id))
+    .sort((a, b) => a.due - b.due);
+
+  return [...queue, ...early].slice(0, limit);
+}
+
+export function countEarlyReviewable(cards: Card[], now = Date.now()): number {
+  return cards.filter((c) => c.state !== 'New' && c.due > now).length;
+}
+
 export function countDueCards(cards: Card[], now = Date.now()): number {
   return cards.filter((c) => (c.state === 'New' || c.due <= now)).length;
 }
